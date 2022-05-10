@@ -1,7 +1,7 @@
 import os
 import re
 
-IDS=['C:\Users\cmust\Desktop\BigData\exercises2\coursesTaken\coursesTaken\coursesTaken-A.csv']
+IDS=[os.path.join(os.path.getcwd(), "coursesTaken", "coursesTaken-A.csv")]
 chrs=range(1,10000)
 
 rule all:
@@ -22,12 +22,11 @@ rule splitByChr:
 
 rule plot_quals:
     input all:
-        "C:\Users\cmust\Desktop\BigData\exercises2\coursesTaken\coursesTaken\.csv"
+        os.path.join(os.path.getcwd(),coursesTaken, ".csv"
     output all:
-        ""C:\Users\cmust\Desktop\BigData\exercises2\coursesTaken\coursesTaken\plot_.pdf""
+        os.path.join(os.path.getcwd(),coursesTaken, "plot.pdf"
     script:
         "scripts/plot-quals.py"
-
 
 
 import matplotlib
