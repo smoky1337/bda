@@ -9,3 +9,4 @@ with open(in_f) as inp:
 count = len(set(lines))
 with open(out_f, "a+") as out:
     out.write(str(count))
+
