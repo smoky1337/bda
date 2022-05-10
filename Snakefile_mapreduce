@@ -1,16 +1,48 @@
-rule all:
-        input:
-                "aggregated-A.txt"
-                "aggregated-B.txt"
+import os
 
-rule split:
-        input:
-                "coursesTaken-{sample}.csv"
-        output:
-                directory("chunks/{sample}/")
-        shell:
-                "split {input} -a 3 --numeric-suffixes -l 100000 'chunks/{output}' --additional-suffix=.csv"
+rule all:
+	input:
+		expand("chunks/{sample}/001.csv", sample = ["A","B"])
+		
+checkpoint split:
+	input:
+		"coursesTaken-{sample}.csv"
+	output:
+		directory("chunks/{sample}/")
+	shell:
+		"split {input} -a 3 --numeric-suffixes -l 100000 '{output}' --additional-suffix=.csv"
+
+def get_chunks(wildcards):
+        out = checkpoints.split.get(**wildcards).output[0]
+        files = expand("chunks/{sample}/{n}.csv", sample = ["A","B"], n = len(os.listDir(os.path.join("chunks","A"))))
+	return files
+def get_counts(wildcards):
+	out = checkpoints.split.get(**wildcards).output[0]
+        files = expand("chunks/{sample}/{n}.count", sample = ["A","B"], n = len(os.listDir(os.path.join("chunks","A"))))
+        return files
 
 
 rule apply:
-        input:
+	input:
+		get_chunks
+	output:
+		directory("chunks/{sample}/{chunk}.count")
+	shell:
+		"python sum_chunk.py {input} {output}"
+
+
+
+rule reduce:
+	input:
+		get_counts
+	output:
+		aggregated-{sample}.txt
+	shell:
+		"python agg_grades.py {input} {output}"
+	
+
+
+
+	
+
+			
