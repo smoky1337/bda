@@ -1,0 +1,16 @@
+rule all:
+        input:
+                "aggregated-A.txt"
+                "aggregated-B.txt"
+
+rule split:
+        input:
+                "coursesTaken-{sample}.csv"
+        output:
+                directory("chunks/{sample}/")
+        shell:
+                "split {input} -a 3 --numeric-suffixes -l 100000 'chunks/{output}' --additional-suffix=.csv"
+
+
+rule apply:
+        input:
