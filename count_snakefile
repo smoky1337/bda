@@ -1,0 +1,7 @@
+rule count:
+        input:
+                "coursesTaken/coursesTaken-{wild}.csv"
+        output:
+                "coursesTaken/coursesTaken-{wild}.count"
+        shell:
+                "python3 coursesTaken/count.py {input} {output}"
